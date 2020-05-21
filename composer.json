@@ -14,7 +14,9 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {},
+    "require": {
+        "doctrine/annotations": "^1.10"
+    },
     "autoload": {
         "psr-4": {
             "TBoileau\\ORM\\": "src/"
