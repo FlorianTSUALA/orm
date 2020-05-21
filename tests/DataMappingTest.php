@@ -6,8 +6,10 @@ use Generator;
 use PHPUnit\Framework\TestCase;
 use TBoileau\ORM\DataMapping\Annotation\BelongsTo;
 use TBoileau\ORM\DataMapping\Annotation\BelongsToMany;
+use TBoileau\ORM\DataMapping\Annotation\Column;
 use TBoileau\ORM\DataMapping\Annotation\HasMany;
 use TBoileau\ORM\DataMapping\Annotation\HasOne;
+use TBoileau\ORM\DataMapping\Reader\ColumnReader;
 use TBoileau\ORM\DataMapping\Reader\RelationReader;
 use TBoileau\ORM\Tests\Fixtures\Bar;
 use TBoileau\ORM\Tests\Fixtures\Baz;
@@ -21,6 +23,53 @@ use TBoileau\ORM\Tests\Fixtures\Qux;
  */
 class DataMappingTest extends TestCase
 {
+    /**
+     * @dataProvider provideColumns
+     * @param string $class
+     * @param string $property
+     * @param string $name
+     * @param string $type
+     * @param null|int $length
+     * @param bool $unique
+     * @param null|int $precision
+     * @param null|int $scale
+     * @throws \ReflectionException
+     */
+    public function test read column annotation(
+        string $class,
+        string $property,
+        string $name,
+        string $type,
+        ?int $length = null,
+        bool $unique = false,
+        ?int $precision = null,
+        ?int $scale = null
+    ) {
+        $columnAnnotation = ColumnReader::read(new \ReflectionProperty($class, $property));
+        $this->assertInstanceOf(Column::class, $columnAnnotation);
+        $this->assertEquals($name, $columnAnnotation->name);
+        $this->assertEquals($type, $columnAnnotation->type);
+        $this->assertEquals($length, $columnAnnotation->length);
+        $this->assertEquals($unique, $columnAnnotation->unique);
+        $this->assertEquals($precision, $columnAnnotation->precision);
+        $this->assertEquals($scale, $columnAnnotation->scale);
+    }
+
+    /**
+     * @return Generator
+     */
+    public function provideColumns(): Generator
+    {
+        yield[Foo::class, "corge", "corge", "integer", null, true];
+        yield[Foo::class, "grault", "grault_txt", "string", 100];
+        yield[Foo::class, "garply", "garply", "float", null, false, 10, 5];
+        yield[Foo::class, "waldo", "waldo", "boolean"];
+        yield[Foo::class, "fred", "fred", "array"];
+        yield[Foo::class, "plugh", "plugh", "text"];
+        yield[Foo::class, "xyzzy", "xyzzy", "datetime"];
+        yield[Foo::class, "thud", "thud", "date"];
+    }
+
     /**
      * @dataProvider provideRelations
      * @param string $class
