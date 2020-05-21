@@ -2,8 +2,8 @@
 
 namespace TBoileau\ORM\Tests;
 
-use Exception\BadQueryException;
 use PHPUnit\Framework\TestCase;
+use TBoileau\ORM\QueryBuilder\Exception\BadQueryException;
 use TBoileau\ORM\QueryBuilder\QueryBuilder;
 
 /**
