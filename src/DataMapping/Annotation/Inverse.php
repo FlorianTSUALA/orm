@@ -5,6 +5,7 @@ namespace TBoileau\ORM\DataMapping\Annotation;
 /**
  * Class Inverse
  * @package TBoileau\ORM\DataMapping\Annotation
+ * @Annotation
  */
 abstract class Inverse extends Relation
 {

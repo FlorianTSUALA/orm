@@ -7,7 +7,7 @@ namespace TBoileau\ORM\DataMapping\Annotation;
  * @package TBoileau\ORM\DataMapping\Annotation
  * @Annotation
  */
-abstract class Relation
+abstract class Relation extends Property
 {
     public $targetEntity;
 

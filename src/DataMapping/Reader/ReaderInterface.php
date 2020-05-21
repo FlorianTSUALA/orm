@@ -3,7 +3,7 @@
 namespace TBoileau\ORM\DataMapping\Reader;
 
 use ReflectionProperty;
-use TBoileau\ORM\DataMapping\Annotation\Relation;
+use TBoileau\ORM\DataMapping\Annotation\Property;
 
 /**
  * Interface ReaderInterface
@@ -13,7 +13,7 @@ interface ReaderInterface
 {
     /**
      * @param ReflectionProperty $property
-     * @return Relation
+     * @return Property
      */
-    public static function read(ReflectionProperty $property): Relation;
+    public static function read(ReflectionProperty $property): Property;
 }
