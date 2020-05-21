@@ -2,7 +2,7 @@
 
 namespace TBoileau\ORM\QueryBuilder;
 
-use Exception\BadQueryException;
+use TBoileau\ORM\QueryBuilder\Exception\BadQueryException;
 
 /**
  * Class QueryBuilder
