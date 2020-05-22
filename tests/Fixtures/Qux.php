@@ -2,7 +2,7 @@
 
 namespace TBoileau\ORM\Tests\Fixtures;
 
-use TBoileau\ORM\DataMapping\Annotation\HasMany;
+use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Qux
@@ -11,8 +11,15 @@ use TBoileau\ORM\DataMapping\Annotation\HasMany;
 class Qux
 {
     /**
+     * @var int|null
+     * @ORM\PrimaryKey(autoIncrement=true)
+     * @ORM\Column(type="integer")
+     */
+    public ?int $id = null;
+
+    /**
      * @var Foo[]
-     * @HasMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", inversedBy="quxes")
+     * @ORM\HasMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", inversedBy="quxes")
      */
     public array $foos;
 }

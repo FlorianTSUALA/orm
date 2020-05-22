@@ -2,7 +2,7 @@
 
 namespace TBoileau\ORM\Tests\Fixtures;
 
-use TBoileau\ORM\DataMapping\Annotation\HasOne;
+use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Foo
@@ -11,8 +11,15 @@ use TBoileau\ORM\DataMapping\Annotation\HasOne;
 class Bar
 {
     /**
+     * @var int|null
+     * @ORM\PrimaryKey(autoIncrement=true)
+     * @ORM\Column(type="integer")
+     */
+    public ?int $id = null;
+
+    /**
      * @var Foo
-     * @HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", inversedBy="bars")
+     * @ORM\HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", inversedBy="bars")
      */
     public Foo $foo;
 }

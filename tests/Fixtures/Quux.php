@@ -2,7 +2,7 @@
 
 namespace TBoileau\ORM\Tests\Fixtures;
 
-use TBoileau\ORM\DataMapping\Annotation\BelongsTo;
+use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Quux
@@ -11,8 +11,15 @@ use TBoileau\ORM\DataMapping\Annotation\BelongsTo;
 class Quux
 {
     /**
+     * @var int|null
+     * @ORM\PrimaryKey(autoIncrement=true)
+     * @ORM\Column(type="integer")
+     */
+    public ?int $id = null;
+
+    /**
      * @var Foo[]
-     * @BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", mappedBy="quux")
+     * @ORM\BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", mappedBy="quux")
      */
     public array $foos;
 }

@@ -11,6 +11,13 @@ use TBoileau\ORM\DataMapping\Annotation as ORM;
 class Foo
 {
     /**
+     * @var int|null
+     * @ORM\PrimaryKey(autoIncrement=true)
+     * @ORM\Column(type="integer")
+     */
+    public ?int $id = null;
+
+    /**
      * @var int
      * @ORM\Column(type="integer", unique=true)
      */

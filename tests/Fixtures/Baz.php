@@ -2,7 +2,7 @@
 
 namespace TBoileau\ORM\Tests\Fixtures;
 
-use TBoileau\ORM\DataMapping\Annotation\BelongsToMany;
+use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Baz
@@ -11,8 +11,15 @@ use TBoileau\ORM\DataMapping\Annotation\BelongsToMany;
 class Baz
 {
     /**
+     * @var int|null
+     * @ORM\PrimaryKey(autoIncrement=true)
+     * @ORM\Column(type="integer")
+     */
+    public ?int $id = null;
+
+    /**
      * @var Foo[]
-     * @BelongsToMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", mappedBy="bazes")
+     * @ORM\BelongsToMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", mappedBy="bazes")
      */
     public array $foos;
 }
