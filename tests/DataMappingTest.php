@@ -31,7 +31,7 @@ class DataMappingTest extends TestCase
      * @param string $property
      * @throws \ReflectionException
      */
-    public function test read primary key annotation(string $class,string $property)
+    public function test read primary key annotation(string $class, string $property)
     {
         $primaryKeyAnnotation = PrimaryKeyReader::read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf(PrimaryKey::class, $primaryKeyAnnotation);
