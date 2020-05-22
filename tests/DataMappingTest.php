@@ -9,7 +9,9 @@ use TBoileau\ORM\DataMapping\Annotation\BelongsToMany;
 use TBoileau\ORM\DataMapping\Annotation\Column;
 use TBoileau\ORM\DataMapping\Annotation\HasMany;
 use TBoileau\ORM\DataMapping\Annotation\HasOne;
+use TBoileau\ORM\DataMapping\Annotation\PrimaryKey;
 use TBoileau\ORM\DataMapping\Reader\ColumnReader;
+use TBoileau\ORM\DataMapping\Reader\PrimaryKeyReader;
 use TBoileau\ORM\DataMapping\Reader\RelationReader;
 use TBoileau\ORM\Tests\Fixtures\Bar;
 use TBoileau\ORM\Tests\Fixtures\Baz;
@@ -23,6 +25,31 @@ use TBoileau\ORM\Tests\Fixtures\Qux;
  */
 class DataMappingTest extends TestCase
 {
+    /**
+     * @dataProvider providePrimaryKeys
+     * @param string $class
+     * @param string $property
+     * @throws \ReflectionException
+     */
+    public function test read primary key annotation(string $class,string $property)
+    {
+        $primaryKeyAnnotation = PrimaryKeyReader::read(new \ReflectionProperty($class, $property));
+        $this->assertInstanceOf(PrimaryKey::class, $primaryKeyAnnotation);
+        $this->assertTrue($primaryKeyAnnotation->autoIncrement);
+    }
+
+    /**
+     * @return Generator
+     */
+    public function providePrimaryKeys(): Generator
+    {
+        yield[Foo::class, "id"];
+        yield[Baz::class, "id"];
+        yield[Bar::class, "id"];
+        yield[Quux::class, "id"];
+        yield[Qux::class, "id"];
+    }
+
     /**
      * @dataProvider provideColumns
      * @param string $class
