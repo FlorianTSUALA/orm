@@ -1,12 +1,13 @@
 <?php
 
-namespace TBoileau\ORM\Tests\Fixtures;
+namespace TBoileau\ORM\Tests\Fixtures\Entity;
 
 use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Foo
- * @package TBoileau\ORM\Tests\Fixtures
+ * @package TBoileau\ORM\Tests\Fixtures\Entity
+ * @ORM\Entity(name="foo_entity", repositoryClass="TBoileau\ORM\Tests\Fixtures\Repository\FooRepository")
  */
 class Foo
 {
@@ -67,25 +68,25 @@ class Foo
 
     /**
      * @var Quux
-     * @ORM\HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Quux", inversedBy="foos")
+     * @ORM\HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Quux", inversedBy="foos")
      */
     public Quux $quux;
 
     /**
      * @var Baz[]
-     * @ORM\HasMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Baz", inversedBy="foos")
+     * @ORM\HasMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Baz", inversedBy="foos")
      */
     public array $bazes;
 
     /**
      * @var Bar[]
-     * @ORM\BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Bar", mappedBy="foo")
+     * @ORM\BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Bar", mappedBy="foo")
      */
     public array $bars;
 
     /**
      * @var Qux[]
-     * @ORM\BelongsToMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Qux", mappedBy="foos")
+     * @ORM\BelongsToMany(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Qux", mappedBy="foos")
      */
     public array $quxes;
 }

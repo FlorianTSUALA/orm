@@ -3,11 +3,13 @@
 namespace TBoileau\ORM\DataMapping\Annotation;
 
 /**
- * Class Property
+ * Class Entity
  * @package TBoileau\ORM\DataMapping\Annotation
  * @Annotation
  */
-abstract class Property extends Annotation
+class Entity extends Annotation
 {
+    public $name;
 
+    public $repositoryClass;
 }

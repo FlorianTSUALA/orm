@@ -11,6 +11,8 @@ abstract class Owner extends Relation
 {
     public $inversedBy;
 
+    public $name;
+
     /**
      * @return string
      */

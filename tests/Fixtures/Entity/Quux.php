@@ -1,12 +1,13 @@
 <?php
 
-namespace TBoileau\ORM\Tests\Fixtures;
+namespace TBoileau\ORM\Tests\Fixtures\Entity;
 
 use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Quux
- * @package TBoileau\ORM\Tests\Fixtures
+ * @package TBoileau\ORM\Tests\Fixtures\Entity
+ * @ORM\Entity
  */
 class Quux
 {
@@ -19,7 +20,7 @@ class Quux
 
     /**
      * @var Foo[]
-     * @ORM\BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", mappedBy="quux")
+     * @ORM\BelongsTo(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Foo", mappedBy="quux")
      */
     public array $foos;
 }

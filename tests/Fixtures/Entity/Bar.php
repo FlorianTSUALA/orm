@@ -1,12 +1,13 @@
 <?php
 
-namespace TBoileau\ORM\Tests\Fixtures;
+namespace TBoileau\ORM\Tests\Fixtures\Entity;
 
 use TBoileau\ORM\DataMapping\Annotation as ORM;
 
 /**
  * Class Foo
- * @package TBoileau\ORM\Tests\Fixtures
+ * @package TBoileau\ORM\Tests\Fixtures\Entity
+ * @ORM\Entity
  */
 class Bar
 {
@@ -19,7 +20,7 @@ class Bar
 
     /**
      * @var Foo
-     * @ORM\HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Foo", inversedBy="bars")
+     * @ORM\HasOne(targetEntity="TBoileau\ORM\Tests\Fixtures\Entity\Foo", inversedBy="bars")
      */
     public Foo $foo;
 }
