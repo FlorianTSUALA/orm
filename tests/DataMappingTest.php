@@ -7,17 +7,20 @@ use PHPUnit\Framework\TestCase;
 use TBoileau\ORM\DataMapping\Annotation\BelongsTo;
 use TBoileau\ORM\DataMapping\Annotation\BelongsToMany;
 use TBoileau\ORM\DataMapping\Annotation\Column;
+use TBoileau\ORM\DataMapping\Annotation\Entity;
 use TBoileau\ORM\DataMapping\Annotation\HasMany;
 use TBoileau\ORM\DataMapping\Annotation\HasOne;
 use TBoileau\ORM\DataMapping\Annotation\PrimaryKey;
 use TBoileau\ORM\DataMapping\Reader\ColumnReader;
+use TBoileau\ORM\DataMapping\Reader\EntityReader;
 use TBoileau\ORM\DataMapping\Reader\PrimaryKeyReader;
 use TBoileau\ORM\DataMapping\Reader\RelationReader;
-use TBoileau\ORM\Tests\Fixtures\Bar;
-use TBoileau\ORM\Tests\Fixtures\Baz;
-use TBoileau\ORM\Tests\Fixtures\Foo;
-use TBoileau\ORM\Tests\Fixtures\Quux;
-use TBoileau\ORM\Tests\Fixtures\Qux;
+use TBoileau\ORM\Tests\Fixtures\Entity\Bar;
+use TBoileau\ORM\Tests\Fixtures\Entity\Baz;
+use TBoileau\ORM\Tests\Fixtures\Entity\Foo;
+use TBoileau\ORM\Tests\Fixtures\Entity\Quux;
+use TBoileau\ORM\Tests\Fixtures\Entity\Qux;
+use TBoileau\ORM\Tests\Fixtures\Repository\FooRepository;
 
 /**
  * Class DataMappingTest
@@ -26,6 +29,34 @@ use TBoileau\ORM\Tests\Fixtures\Qux;
 class DataMappingTest extends TestCase
 {
     /**
+     * @dataProvider provideEntities
+     * @param string $class
+     * @param string $name
+     * @param string|null $repository
+     * @throws \ReflectionException
+     */
+    public function test read entity annotation(string $class, string $name, ?string $repository = null)
+    {
+        $reader = new EntityReader();
+        $primaryKeyAnnotation = $reader->read(new \ReflectionClass($class));
+        $this->assertInstanceOf(Entity::class, $primaryKeyAnnotation);
+        $this->assertEquals($name, $primaryKeyAnnotation->name);
+        $this->assertEquals($repository, $primaryKeyAnnotation->repositoryClass);
+    }
+
+    /**
+     * @return Generator
+     */
+    public function provideEntities(): Generator
+    {
+        yield[Foo::class, "foo_entity", FooRepository::class];
+        yield[Baz::class, "baz"];
+        yield[Bar::class, "bar"];
+        yield[Quux::class, "quux"];
+        yield[Qux::class, "qux"];
+    }
+
+    /**
      * @dataProvider providePrimaryKeys
      * @param string $class
      * @param string $property
@@ -33,7 +64,8 @@ class DataMappingTest extends TestCase
      */
     public function test read primary key annotation(string $class, string $property)
     {
-        $primaryKeyAnnotation = PrimaryKeyReader::read(new \ReflectionProperty($class, $property));
+        $reader = new PrimaryKeyReader();
+        $primaryKeyAnnotation = $reader->read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf(PrimaryKey::class, $primaryKeyAnnotation);
         $this->assertTrue($primaryKeyAnnotation->autoIncrement);
     }
@@ -72,7 +104,8 @@ class DataMappingTest extends TestCase
         ?int $precision = null,
         ?int $scale = null
     ) {
-        $columnAnnotation = ColumnReader::read(new \ReflectionProperty($class, $property));
+        $reader = new ColumnReader();
+        $columnAnnotation = $reader->read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf(Column::class, $columnAnnotation);
         $this->assertEquals($name, $columnAnnotation->name);
         $this->assertEquals($type, $columnAnnotation->type);
@@ -104,6 +137,7 @@ class DataMappingTest extends TestCase
      * @param string $relation
      * @param string $targetEntity
      * @param string $targetProperty
+     * @param string|null $name
      * @throws \ReflectionException
      */
     public function test read relation annotation(
@@ -111,12 +145,17 @@ class DataMappingTest extends TestCase
         string $property,
         string $relation,
         string $targetEntity,
-        string $targetProperty
+        string $targetProperty,
+        ?string $name = null
     ) {
-        $relationAnnotation = RelationReader::read(new \ReflectionProperty($class, $property));
+        $reader = new RelationReader();
+        $relationAnnotation = $reader->read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf($relation, $relationAnnotation);
         $this->assertEquals($targetEntity, $relationAnnotation->targetEntity);
         $this->assertEquals($targetProperty, $relationAnnotation->getTargetProperty());
+        if ($name !== null) {
+            $this->assertEquals($name, $relationAnnotation->name);
+        }
     }
 
     /**
@@ -125,15 +164,15 @@ class DataMappingTest extends TestCase
     public function provideRelations(): Generator
     {
         yield[Foo::class, "bars", BelongsTo::class, Bar::class, "foo"];
-        yield[Bar::class, "foo", HasOne::class, Foo::class, "bars"];
+        yield[Bar::class, "foo", HasOne::class, Foo::class, "bars", "bar_foo"];
 
         yield[Foo::class, "quxes", BelongsToMany::class, Qux::class, "foos"];
-        yield[Qux::class, "foos", HasMany::class, Foo::class, "quxes"];
+        yield[Qux::class, "foos", HasMany::class, Foo::class, "quxes", "qux_foos"];
 
-        yield[Foo::class, "quux", HasOne::class, Quux::class, "foos"];
+        yield[Foo::class, "quux", HasOne::class, Quux::class, "foos", "foo_quux"];
         yield[Quux::class, "foos", BelongsTo::class, Foo::class, "quux"];
 
-        yield[Foo::class, "bazes", HasMany::class, Baz::class, "foos"];
+        yield[Foo::class, "bazes", HasMany::class, Baz::class, "foos", "foo_bazes"];
         yield[Baz::class, "foos", BelongsToMany::class, Foo::class, "bazes"];
     }
 }
