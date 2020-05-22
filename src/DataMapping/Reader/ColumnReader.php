@@ -5,6 +5,7 @@ namespace TBoileau\ORM\DataMapping\Reader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use ReflectionProperty;
 use TBoileau\ORM\DataMapping\Annotation\Column;
+
 use function Symfony\Component\String\u;
 
 /**
