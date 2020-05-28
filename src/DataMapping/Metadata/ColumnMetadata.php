@@ -4,6 +4,8 @@ namespace TBoileau\ORM\DataMapping\Metadata;
 
 use ReflectionProperty;
 
+use function Symfony\Component\String\u;
+
 /**
  * Class ColumnMetadata
  * @package TBoileau\ORM\DataMapping\Metadata
@@ -66,6 +68,19 @@ class ColumnMetadata extends PropertyMetadata
         $this->unique = $unique;
         $this->precision = $precision;
         $this->scale = $scale;
+    }
+
+    /**
+     * @param object $entity
+     * @return mixed
+     */
+    public function getValue(object $entity)
+    {
+        if ($this->property->isPublic()) {
+            return $this->property->getValue($entity);
+        }
+
+        return $entity->{u(sprintf("get %s", $this->property->getName()))->camel()}();
     }
 
     /**
