@@ -10,13 +10,13 @@ use TBoileau\ORM\DataMapping\Annotation\PrimaryKey;
  * Class PrimaryKeyReader
  * @package TBoileau\ORM\DataMapping\Reader
  */
-class PrimaryKeyReader implements PrimaryKeyReaderInterface
+class PrimaryKeyReader
 {
     /**
      * @param ReflectionProperty $property
-     * @return PrimaryKey
+     * @return PrimaryKey|null
      */
-    public function read(ReflectionProperty $property): PrimaryKey
+    public static function read(ReflectionProperty $property): ?PrimaryKey
     {
         return (new AnnotationReader())->getPropertyAnnotation($property, PrimaryKey::class);
     }

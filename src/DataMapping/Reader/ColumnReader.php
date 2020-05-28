@@ -12,18 +12,25 @@ use function Symfony\Component\String\u;
  * Class ColumnReader
  * @package TBoileau\ORM\DataMapping\Reader
  */
-class ColumnReader implements ColumnReaderInterface
+class ColumnReader
 {
     /**
      * @param ReflectionProperty $property
-     * @return Column
+     * @return Column|null
      */
-    public function read(ReflectionProperty $property): Column
+    public static function read(ReflectionProperty $property): ?Column
     {
         $column = (new AnnotationReader())->getPropertyAnnotation($property, Column::class);
 
+        if ($column === null) {
+            return null;
+        }
+
         if ($column->name === null) {
             $column->name = u($property->getName())->snake();
+        }
+        if ($column->unique === null) {
+            $column->unique = false;
         }
 
         return $column;

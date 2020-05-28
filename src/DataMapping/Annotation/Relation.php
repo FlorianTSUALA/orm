@@ -15,4 +15,9 @@ abstract class Relation extends Property
      * @return string
      */
     abstract public function getTargetProperty(): string;
+
+    /**
+     * @return string
+     */
+    abstract public function getMetadataClass(): string;
 }

@@ -12,13 +12,13 @@ use function Symfony\Component\String\u;
  * Class EntityReader
  * @package TBoileau\ORM\DataMapping\Reader
  */
-class EntityReader implements EntityReaderInterface
+class EntityReader
 {
     /**
      * @param ReflectionClass $class
      * @return Entity
      */
-    public function read(ReflectionClass $class): Entity
+    public static function read(ReflectionClass $class): Entity
     {
         /** @var Entity $entity */
         $entity = (new AnnotationReader())->getClassAnnotation($class, Entity::class);

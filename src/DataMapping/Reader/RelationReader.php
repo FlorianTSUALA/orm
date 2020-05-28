@@ -13,13 +13,13 @@ use function Symfony\Component\String\u;
  * Class RelationResolver
  * @package TBoileau\ORM\DataMapping\Reader
  */
-class RelationReader implements RelationReaderInterface
+class RelationReader
 {
     /**
      * @param ReflectionProperty $property
-     * @return Relation
+     * @return Relation|null
      */
-    public function read(ReflectionProperty $property): Relation
+    public static function read(ReflectionProperty $property): ?Relation
     {
         /** @var Relation $relation */
         $relation = (new AnnotationReader())->getPropertyAnnotation($property, Relation::class);
