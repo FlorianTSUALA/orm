@@ -10,11 +10,11 @@ use TBoileau\ORM\DataMapping\Resolver\MetadataResolver;
  */
 final class UnitOfWork
 {
-    const STATE_NEW = "new";
+    public const STATE_NEW = "new";
 
-    const STATE_MANAGED = "managed";
+    public const STATE_MANAGED = "managed";
 
-    const STATE_REMOVED = "removed";
+    public const STATE_REMOVED = "removed";
 
     /**
      * @var Reference[]
