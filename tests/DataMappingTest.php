@@ -11,10 +11,16 @@ use TBoileau\ORM\DataMapping\Annotation\Entity;
 use TBoileau\ORM\DataMapping\Annotation\HasMany;
 use TBoileau\ORM\DataMapping\Annotation\HasOne;
 use TBoileau\ORM\DataMapping\Annotation\PrimaryKey;
+use TBoileau\ORM\DataMapping\Metadata\EntityMetadata;
+use TBoileau\ORM\DataMapping\Metadata\PrimaryKeyMetadata;
 use TBoileau\ORM\DataMapping\Reader\ColumnReader;
 use TBoileau\ORM\DataMapping\Reader\EntityReader;
 use TBoileau\ORM\DataMapping\Reader\PrimaryKeyReader;
 use TBoileau\ORM\DataMapping\Reader\RelationReader;
+use TBoileau\ORM\DataMapping\Resolver\ColumnResolver;
+use TBoileau\ORM\DataMapping\Resolver\MetadataResolver;
+use TBoileau\ORM\DataMapping\Resolver\PrimaryKeyResolver;
+use TBoileau\ORM\DataMapping\Resolver\RelationResolver;
 use TBoileau\ORM\Tests\Fixtures\Entity\Bar;
 use TBoileau\ORM\Tests\Fixtures\Entity\Baz;
 use TBoileau\ORM\Tests\Fixtures\Entity\Foo;
@@ -33,12 +39,44 @@ class DataMappingTest extends TestCase
      * @param string $class
      * @param string $name
      * @param string|null $repository
+     * @param array $columns
+     * @param array $relations
+     * @throws \ReflectionException
+     */
+    public function test get entity metadata(
+        string $class,
+        string $name,
+        ?string $repository = null,
+        array $columns = [],
+        array $relations = []
+    ) {
+        $resolver = new MetadataResolver(
+            new ColumnResolver(),
+            new PrimaryKeyResolver()
+        );
+
+        $entityMetadata = $resolver->getMetadata($class);
+        $this->assertInstanceOf(EntityMetadata::class, $entityMetadata);
+        $this->assertEquals($name, $entityMetadata->getTableName());
+        $this->assertEquals($repository, $entityMetadata->getRepositoryClass());
+
+        $this->assertInstanceOf(PrimaryKeyMetadata::class, $entityMetadata->getPrimaryKey());
+
+        $this->assertCount(count($columns), $entityMetadata->getColumns());
+
+        $this->assertCount(count($relations), $entityMetadata->getRelations());
+    }
+
+    /**
+     * @dataProvider provideEntities
+     * @param string $class
+     * @param string $name
+     * @param string|null $repository
      * @throws \ReflectionException
      */
     public function test read entity annotation(string $class, string $name, ?string $repository = null)
     {
-        $reader = new EntityReader();
-        $primaryKeyAnnotation = $reader->read(new \ReflectionClass($class));
+        $primaryKeyAnnotation = EntityReader::read(new \ReflectionClass($class));
         $this->assertInstanceOf(Entity::class, $primaryKeyAnnotation);
         $this->assertEquals($name, $primaryKeyAnnotation->name);
         $this->assertEquals($repository, $primaryKeyAnnotation->repositoryClass);
@@ -49,11 +87,17 @@ class DataMappingTest extends TestCase
      */
     public function provideEntities(): Generator
     {
-        yield[Foo::class, "foo_entity", FooRepository::class];
-        yield[Baz::class, "baz"];
-        yield[Bar::class, "bar"];
-        yield[Quux::class, "quux"];
-        yield[Qux::class, "qux"];
+        yield[
+            Foo::class,
+            "foo_entity",
+            FooRepository::class,
+            ["corge", "grault", "garply", "waldo", "fred", "plugh", "xyzzy", "thud"],
+            ["quux", "bazes", "bars", "quxes"]
+        ];
+        yield[Baz::class, "baz", null, [], ["foos"]];
+        yield[Bar::class, "bar", null, [], ["foo"]];
+        yield[Quux::class, "quux", null, [], ["foos"]];
+        yield[Qux::class, "qux", null, [], ["foos"]];
     }
 
     /**
@@ -64,8 +108,7 @@ class DataMappingTest extends TestCase
      */
     public function test read primary key annotation(string $class, string $property)
     {
-        $reader = new PrimaryKeyReader();
-        $primaryKeyAnnotation = $reader->read(new \ReflectionProperty($class, $property));
+        $primaryKeyAnnotation = PrimaryKeyReader::read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf(PrimaryKey::class, $primaryKeyAnnotation);
         $this->assertTrue($primaryKeyAnnotation->autoIncrement);
     }
@@ -104,8 +147,7 @@ class DataMappingTest extends TestCase
         ?int $precision = null,
         ?int $scale = null
     ) {
-        $reader = new ColumnReader();
-        $columnAnnotation = $reader->read(new \ReflectionProperty($class, $property));
+        $columnAnnotation = ColumnReader::read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf(Column::class, $columnAnnotation);
         $this->assertEquals($name, $columnAnnotation->name);
         $this->assertEquals($type, $columnAnnotation->type);
@@ -148,8 +190,7 @@ class DataMappingTest extends TestCase
         string $targetProperty,
         ?string $name = null
     ) {
-        $reader = new RelationReader();
-        $relationAnnotation = $reader->read(new \ReflectionProperty($class, $property));
+        $relationAnnotation = RelationReader::read(new \ReflectionProperty($class, $property));
         $this->assertInstanceOf($relation, $relationAnnotation);
         $this->assertEquals($targetEntity, $relationAnnotation->targetEntity);
         $this->assertEquals($targetProperty, $relationAnnotation->getTargetProperty());
