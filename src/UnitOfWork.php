@@ -76,7 +76,8 @@ final class UnitOfWork
     public function getNewEntityReferences(): array
     {
         return array_filter(
-            static::$references, fn (Reference $reference): bool => $reference->getState() === self::STATE_NEW
+            static::$references,
+            fn (Reference $reference): bool => $reference->getState() === self::STATE_NEW
         );
     }
 
@@ -86,7 +87,8 @@ final class UnitOfWork
     public function getManagedEntityReferences(): array
     {
         return array_filter(
-            static::$references, fn (Reference $reference): bool => $reference->getState() === self::STATE_MANAGED
+            static::$references,
+            fn (Reference $reference): bool => $reference->getState() === self::STATE_MANAGED
         );
     }
 
@@ -96,14 +98,15 @@ final class UnitOfWork
     public function getRemovedEntityReferences(): array
     {
         return array_filter(
-            static::$references, fn (Reference $reference): bool => $reference->getState() === self::STATE_REMOVED
+            static::$references,
+            fn (Reference $reference): bool => $reference->getState() === self::STATE_REMOVED
         );
     }
 
     /**
      * Remove all 'removed references'
      */
-    public function clearRemovedEntityReference(): void 
+    public function clearRemovedEntityReference(): void
     {
         static::$references = array_filter(
             static::$references,
