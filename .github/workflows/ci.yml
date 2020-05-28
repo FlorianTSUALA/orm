@@ -1,5 +1,5 @@
 name: Testing project
-on: [push, pull_request]
+on: [push]
 jobs:
   router:
     name: ORM library in PHP 7.4
